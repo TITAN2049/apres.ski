@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Management Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar with Scrollbar -->
+        <div class="sidebar">
+            <h2>Dashboard</h2>
+            <a href="#" onclick="showForm('business')">Business Management</a>
+            <a href="#" onclick="showForm('event')">Event Management</a>
+            <a href="#" onclick="showForm('user')">User Management</a>
+            <a href="#" onclick="showForm('calendar')">Calendar</a>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content">
+            <div id="business" class="form-section active"> 
+                <h3>Business Management</h3>
+                
+                <!-- Add Business Button at the Top -->
+                <button id="toggleFormButton">Add Business</button>
+                
+                <!-- Business List -->
+                <div id="businessList">
+                    <h4>All Businesses</h4>
+                    <div id="businessListContainer" class="business-list">
+                        <!-- Business list will be populated here -->
+                    </div>
+                </div>
+            
+                <!-- Add Business Form -->
+                <div id="addBusinessForm" class="form-container" style="display: none;">
+                    <button id="closeFormButton" class="close-button">X</button>
+                    <h2>Add a New Business</h2>
+                    
+                    <form id="businessForm" action="/api/add-business" method="post" enctype="multipart/form-data">
+                        <!-- Venue Name -->
+                        <label for="venue_name">Venue Name:</label>
+                        <input type="text" id="venue_name" name="venue_name" required><br><br>
+            
+                        <!-- Best of Apres-Ski -->
+                        <label for="best_of_apres_ski">Best of Apres-Ski?</label>
+                        <select id="best_of_apres_ski" name="best_of_apres_ski" required>
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select><br><br>
+            
+                        <!-- Classification -->
+                        <label for="classification">Classification:</label>
+                        <select id="classification" name="classification" required>
+                            <option value="Double Diamond (21+ Only)">Double Diamond (21+ Only)</option>
+                            <option value="Black Diamond (Adults Only Recommended)">Black Diamond (Adults Only Recommended)</option>
+                            <option value="Blue Square + Double Diamond">Blue Square + Double Diamond (Family-Friendly during day, 21+ After 9p)</option>
+                            <option value="Blue Square (Family-Friendly)">Blue Square (Family-Friendly)</option>
+                            <option value="Green Circle (All Ages)">Green Circle (All Ages)</option>
+                        </select><br><br>
+            
+                        <!-- Physical Address -->
+                        <label for="physical_address">Physical Address:</label>
+                        <input type="text" id="physical_address" name="physical_address" required><br><br>
+            
+                        <!-- City Dropdown -->
+                        <label for="city">City:</label>
+                        <select id="city" name="city" required></select><br><br>
+            
+                        <!-- State Dropdown -->
+                        <label for="state">State:</label>
+                        <select id="state" name="state" required></select><br><br>
+            
+                        <!-- Zip Code -->
+                        <label for="zipcode">Zip:</label>
+                        <input type="text" id="zipcode" name="zipcode" required><br><br>
+            
+                        <!-- Mailing Address Section -->
+                        <label>
+                            <input type="checkbox" id="same_address_checkbox" name="same_address_checkbox">
+                            Mailing address is the same as physical address
+                        </label><br><br>
+            
+                        <div id="mailing_address_section">
+                            <label for="mailing_address">Mailing Address:</label>
+                            <input type="text" id="mailing_address" name="mailing_address"><br><br>
+            
+                            <label for="mailing_city">Mailing City:</label>
+                            <input type="text" id="mailing_city" name="mailing_city"><br><br>
+            
+                            <label for="mailing_state">Mailing State:</label>
+                            <select id="mailing_state" name="mailing_state"></select><br><br>
+            
+                            <label for="mailing_zip">Mailing Zip:</label>
+                            <input type="text" id="mailing_zip" name="mailing_zip"><br><br>
+                        </div>
+            
+                        <!-- Apres-Ski Membership -->
+                        <fieldset>
+                            <legend>Best of Apres-Ski Membership (check all that apply):</legend>
+                            <label><input type="checkbox" name="apres_ski_membership[]" value="2025"> 2025</label><br>
+                            <label><input type="checkbox" name="apres_ski_membership[]" value="2020"> 2020</label><br>
+                            <label><input type="checkbox" name="apres_ski_membership[]" value="2019"> 2019</label><br>
+                            <label><input type="checkbox" name="apres_ski_membership[]" value="2018"> 2018</label><br>
+                            <label><input type="checkbox" name="apres_ski_membership[]" value="2017"> 2017</label><br>
+                        </fieldset><br>
+            
+                        <!-- Social Media and Website Links -->
+                        <label for="website_url">Website URL:</label>
+                        <input type="url" id="website_url" name="website_url"><br><br>
+            
+                        <label for="facebook_page">Facebook Page:</label>
+                        <input type="url" id="facebook_page" name="facebook_page"><br><br>
+            
+                        <label for="instagram_page">Instagram Page:</label>
+                        <input type="url" id="instagram_page" name="instagram_page"><br><br>
+            
+                        <label for="x_page">X Page:</label>
+                        <input type="url" id="x_page" name="x_page"><br><br>
+            
+                        <!-- Approved Photos -->
+                        <label for="approved_photos">Approved Photos (Must have at least one):</label>
+                        <input type="file" id="approved_photos" name="photos" accept="image/*" required><br><br>
+                        
+                        <!-- Submit Button -->
+                        <button type="submit">Submit</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div id="event" class="form-section">
+                <h3>Event Management</h3>
+                <button id="addEventButton">Add Event</button>
+            
+                <div id="addEventForm" style="display: none;">
+                    <h2>Add Event</h2>
+                    <form id="eventForm">
+                        <label for="ski_town">Ski Town:</label>
+                        <select id="ski_town" name="ski_town_id"></select>
+                
+                        <label for="organizers">Organizer(s):</label>
+                        <select id="organizers" name="organizer_ids" multiple></select>
+                
+                        <label for="venue">Venue:</label>
+                        <select id="venue" name="venue_id"></select>
+                
+                        <label for="event_title">Event Title:</label>
+                        <input type="text" id="event_title" name="event_title" required>
+                
+                        <label for="start_date">Start Date:</label>
+                        <input type="date" id="start_date" name="start_date" required>
+                
+                        <label for="start_time">Start Time:</label>
+                        <input type="time" id="start_time" name="start_time" required>
+                
+                        <label for="end_date">End Date:</label>
+                        <input type="date" id="end_date" name="end_date">
+                
+                        <label for="end_time">End Time:</label>
+                        <input type="time" id="end_time" name="end_time">
+                
+                        <label for="repeat_type">Repeats:</label>
+                        <select id="repeat_type" name="repeat_type">
+                            <option value="None">None</option>
+                            <option value="Daily">Daily</option>
+                            <option value="Weekly">Weekly</option>
+                        </select>
+                
+                        <label for="description">Description:</label>
+                        <textarea id="description" name="description"></textarea>
+                
+                        <label for="is_featured">Featured Event:</label>
+                        <input type="checkbox" id="is_featured" name="is_featured">
+                
+                        <label for="cost">Cost:</label>
+                        <input type="number" id="cost" name="cost" placeholder="Enter cost or leave empty if free">
+                
+                        <label for="ticket_link">Ticket Link:</label>
+                        <input type="url" id="ticket_link" name="ticket_link">
+                
+                        <button type="submit">Add Event</button>
+                    </form>
+                </div>
+                <div id="eventsContainer"></div>
+                
+            
+            <!-- User Management Section -->
+            <div id="user" class="form-section">
+                <h3>User Management</h3>
+                <form id="userForm">
+                    <!-- User management form content -->
+                </form>
+            </div>
+
+            <!-- Calendar Section -->
+            <div id="calendar" class="form-section">
+                <h3>Calendar</h3>
+                <form id="calendarForm">
+                    <!-- Calendar form content -->
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
