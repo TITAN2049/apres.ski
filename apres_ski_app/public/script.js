@@ -59,31 +59,70 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
+    // Form submission for adding or updating an event
+document.getElementById('eventForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const selectedCategories = Array.from(document.getElementById('categories').selectedOptions).map(option => option.value);
+    const eventDetails = {
+        ski_town_id: formData.get('ski_town_id'),
+        organizer_ids: formData.get('organizer_ids'),
+        venue_id: formData.get('venue_id'),
+        event_title: formData.get('event_title'),
+        start_date: formData.get('start_date'),
+        start_time: formData.get('start_time'),
+        end_date: formData.get('end_date'),
+        end_time: formData.get('end_time'),
+        repeat_type: formData.get('repeat_type'),
+        description: formData.get('description'),
+        is_featured: formData.get('is_featured') === 'on',
+        cost: formData.get('cost'),
+        ticket_link: formData.get('ticket_link'),
+        categories: selectedCategories // Pass selected categories
+    };
+
+    try {
+        const response = await fetch('/api/events', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(eventDetails)
+        });
+
+        if (response.ok) {
+            alert('Event added successfully!');
+            loadEvents(); // Refresh event list if needed
+        } else {
+            console.error('Failed to add event');
+        }
+    } catch (error) {
+        console.error('Error submitting event form:', error);
+    }
+});
+
+
     // Load States dynamically
     async function loadStates() {
         try {
             const response = await fetch('/api/states');
             const states = await response.json();
             stateSelect.innerHTML = '<option value="">Select State</option>';
-            mailingStateSelect.innerHTML = '<option value="">Select State</option>';
             states.forEach(state => {
                 const option = document.createElement('option');
                 option.value = state.state_id;
                 option.textContent = state.state_name;
                 stateSelect.appendChild(option);
-                mailingStateSelect.appendChild(option.cloneNode(true));
             });
         } catch (error) {
             console.error('Error loading states:', error);
         }
     }
-
-    // Load cities based on selected state
+    
     async function loadCitiesByState(stateId) {
         try {
             const response = await fetch(`/api/cities?state_id=${stateId}`);
             const cities = await response.json();
-            citySelect.innerHTML = '<option value="">Select City</option>'; // Placeholder
+            citySelect.innerHTML = '<option value="">Select City</option>';
             cities.forEach(city => {
                 const option = document.createElement('option');
                 option.value = city.city_id;
@@ -94,17 +133,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error('Error loading cities:', error);
         }
     }
-
-    // Event listener for state change to update cities
+    
     stateSelect.addEventListener('change', (e) => {
         const selectedStateId = e.target.value;
         if (selectedStateId) {
             loadCitiesByState(selectedStateId);
         } else {
-            citySelect.innerHTML = '<option value="">Select City</option>'; // Reset if no state selected
+            citySelect.innerHTML = '<option value="">Select City</option>';
         }
     });
-
+    
     // Checkbox event listener for same address
     sameAddressCheckbox.addEventListener('change', () => {
         if (sameAddressCheckbox.checked) {
@@ -212,6 +250,83 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert('An unexpected error occurred. Please check the console for details.');
         }
     });
+
+    // Edit a business function
+    window.editBusiness = async function(businessId) {
+        try {
+            const response = await fetch(`/api/businesses/${businessId}`);
+            const business = await response.json();
+
+            document.getElementById('venue_name').value = business.venue_name;
+            document.getElementById('best_of_apres_ski').value = business.best_of_apres_ski ? 'true' : 'false';
+            document.getElementById('classification').value = business.classification;
+            document.getElementById('physical_address').value = business.physical_address;
+            document.getElementById('city').value = business.city_id;
+            document.getElementById('state').value = business.state_id;
+            document.getElementById('zipcode').value = business.zipcode;
+            document.getElementById('website_url').value = business.website_url;
+            document.getElementById('facebook_page').value = business.facebook_page;
+            document.getElementById('instagram_page').value = business.instagram_page;
+            document.getElementById('x_page').value = business.x_page;
+
+            addBusinessForm.style.display = 'block';
+            toggleFormButton.textContent = 'Hide Form';
+            document.getElementById('businessForm').setAttribute('data-business-id', businessId);
+        } catch (error) {
+            console.error('Error editing business:', error);
+        }
+    };
+
+    // Delete a business function
+    window.deleteBusiness = async function(businessId) {
+        if (!confirm("Are you sure you want to delete this business?")) return;
+
+        try {
+            const response = await fetch(`/api/businesses/${businessId}`, { method: 'DELETE' });
+            if (response.ok) {
+                alert('Business deleted successfully');
+                await loadBusinesses();
+            } else {
+                alert('Failed to delete business');
+            }
+        } catch (error) {
+            console.error('Error deleting business:', error);
+        }
+    };
+    async function loadBusinessesByCity(cityId) {
+        try {
+            const response = await fetch(`/api/businesses?city_id=${cityId}`);
+            const businesses = await response.json();
+            organizerDropdown.innerHTML = '<option value="">Select Organizer</option>';
+            businesses.forEach(business => {
+                const option = document.createElement('option');
+                option.value = business.business_id;
+                option.textContent = business.venue_name;
+                organizerDropdown.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error loading businesses:', error);
+        }
+    }
+    
+    citySelect.addEventListener('change', (e) => {
+        const selectedCityId = e.target.value;
+        if (selectedCityId) {
+            loadBusinessesByCity(selectedCityId);
+        } else {
+            organizerDropdown.innerHTML = '<option value="">Select Organizer</option>';
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadStates(); // Load all states initially
+    
+        addEventButton.addEventListener('click', () => {
+            addEventForm.style.display = addEventForm.style.display === 'none' ? 'block' : 'none';
+        });
+    });
+    
+    
 
     // Load data on page load
     await loadStates();
