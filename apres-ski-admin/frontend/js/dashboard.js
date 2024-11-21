@@ -53,49 +53,44 @@ document.querySelectorAll(".tab-item").forEach((tab) => {
 
         console.log("Tab clicked:", target);
 
+        // Remove 'active' class from all tabs
+        document.querySelectorAll(".tab-item").forEach((tabItem) => {
+            tabItem.classList.remove("active");
+        });
+
+        // Add 'active' class to the clicked tab
+        event.target.classList.add("active");
+
         // Hide all tab contents
         document.querySelectorAll(".tab-content").forEach((content) => {
             content.classList.remove("active");
-            content.style.display = "none";
+            content.style.display = "none"; // Hide all contents
         });
 
         // Show the selected tab content
         const tabContent = document.getElementById(target);
         if (tabContent) {
             tabContent.classList.add("active");
-            tabContent.style.display = "block";
+            tabContent.style.display = "block"; // Show the target content
 
-            // Load content dynamically for specific tabs
+            // Dynamically load content for specific tabs
             if (target === "users-tab") {
-                const token = localStorage.getItem("token");
-                const role = localStorage.getItem("role");
-
-                if (role !== "superuser") {
-                    tabContent.innerHTML = "<p>You do not have permission to view this page.</p>";
-                    return;
-                }
-
-                try {
-                    const users = await fetchUsers(token);
-                    renderUsersTable(users);
-                } catch (error) {
-                    console.error("Error fetching users:", error);
-                    alert("Failed to fetch users.");
-                }
+                await loadUsersTab();
+            } else if (target === "calendars-tab") {
+                await loadCalendarsTab();
+            } else if (target === "businesses-tab") {
+                await loadBusinessesTab();
             } else if (target === "events-tab") {
-                try {
-                    const events = await fetchEvents();
-                    renderEventsTable(events);
-                } catch (error) {
-                    console.error("Error fetching events:", error);
-                    alert("Failed to fetch events.");
-                }
+                await loadEventsTab();
+            } else if (target === "states-tab") {
+                await loadStatesTab();
             }
         } else {
             console.error(`Tab content not found for target: ${target}`);
         }
     });
 });
+
 
 // Activate a specific tab (helper function)
 function activateTab(tab, content) {

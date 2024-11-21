@@ -229,3 +229,61 @@ form button:hover {
     right: 20px; /* Adjust distance from the right of the form */
     z-index: 10; /* Ensure it appears above other elements */
 }
+.form-layout {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.form-layout label {
+    font-weight: bold;
+    align-self: center;
+}
+
+.form-layout input,
+.form-layout select,
+.form-layout button {
+    padding: 8px;
+    font-size: 16px;
+}
+
+.state-card, .town-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background: #f9f9f9;
+}
+
+.towns-container, .town-details {
+    margin-top: 10px;
+    padding-left: 15px;
+}
+
+button {
+    margin: 5px;
+    padding: 5px 10px;
+    border: none;
+    background: #007BFF;
+    color: white;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin: 5px 0;
+}
+#calendar {
+    max-width: 900px;
+    margin: 20px auto;
+}

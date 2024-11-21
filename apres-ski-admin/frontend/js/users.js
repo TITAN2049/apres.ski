@@ -37,13 +37,42 @@ async function fetchUsers(token) {
 
     return response.json();
 }
+async function loadUsersTab() {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    // Check for permissions
+    if (!token || role !== "superuser") {
+        const usersTab = document.getElementById("users-tab");
+        if (usersTab) {
+            usersTab.innerHTML = "<p>You do not have permission to view this page.</p>";
+        }
+        return;
+    }
+
+    try {
+        const users = await fetchUsers(token); // Fetch users
+        renderUsersTable(users); // Render the table
+    } catch (error) {
+        console.error("Error loading users:", error);
+        const usersTab = document.getElementById("users-tab");
+        if (usersTab) {
+            usersTab.innerHTML = "<p>Failed to load users. Please try again later.</p>";
+        }
+    }
+}
+
 
 // Render the users table
 function renderUsersTable(users) {
-    console.log("Rendering users:", users);
+    const usersTab = document.getElementById("users-tab");
+    if (!usersTab) {
+        console.error("Users tab content not found");
+        return;
+    }
 
-    const contentArea = document.getElementById("content-area");
-    contentArea.innerHTML = `
+    // Populate the Users tab content
+    usersTab.innerHTML = `
         <h2>Manage Users</h2>
         <button id="add-user-btn" class="action-btn">Add User</button>
         <table>
@@ -80,7 +109,7 @@ function renderUsersTable(users) {
         </table>
     `;
 
-    // Attach event listeners
+    // Attach event listeners for buttons
     document.getElementById("add-user-btn").addEventListener("click", renderAddUserForm);
 
     document.querySelectorAll(".edit-user-btn").forEach((btn) =>
@@ -94,8 +123,13 @@ function renderUsersTable(users) {
 
 // Render the Add User form
 function renderAddUserForm() {
-    const contentArea = document.getElementById("content-area");
-    contentArea.innerHTML = `
+    const usersTab = document.getElementById("users-tab");
+    if (!usersTab) {
+        console.error("Users tab content not found");
+        return;
+    }
+
+    usersTab.innerHTML = `
         <h2>Add User</h2>
         <button id="close-add-user" class="close-btn">X</button>
         <form id="add-user-form">
@@ -111,17 +145,15 @@ function renderAddUserForm() {
             <select id="role" name="role" required>
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
-                <option value="superuser">Superuser</option>
+                <option value="Super_User">Super User</option>
             </select>
             <button type="submit">Add User</button>
         </form>
     `;
 
     // Close form functionality
-    document.getElementById("close-add-user").addEventListener("click", async () => {
-        const token = localStorage.getItem("token");
-        const users = await fetchUsers(token);
-        renderUsersTable(users);
+    document.getElementById("close-add-user").addEventListener("click", () => {
+        loadUsersTab();
     });
 
     // Add user functionality
@@ -148,15 +180,12 @@ function renderAddUserForm() {
 
             if (response.ok) {
                 alert("User added successfully.");
-                const users = await fetchUsers(token);
-                renderUsersTable(users);
+                loadUsersTab(); // Reload Users Tab
             } else {
-                const error = await response.json();
-                alert(error.message || "Failed to add user.");
+                alert("Failed to add user.");
             }
-        } catch (err) {
-            console.error("Error adding user:", err);
-            alert("An unexpected error occurred.");
+        } catch (error) {
+            console.error("Error adding user:", error);
         }
     });
 }
@@ -165,9 +194,7 @@ function renderAddUserForm() {
 async function renderEditUserForm(userId) {
     const token = localStorage.getItem("token");
     const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
     });
 
     if (!response.ok) {
@@ -177,8 +204,8 @@ async function renderEditUserForm(userId) {
 
     const user = await response.json();
 
-    const contentArea = document.getElementById("content-area");
-    contentArea.innerHTML = `
+    const usersTab = document.getElementById("users-tab");
+    usersTab.innerHTML = `
         <h2>Edit User</h2>
         <button id="close-edit-user" class="close-btn">X</button>
         <form id="edit-user-form">
@@ -201,9 +228,8 @@ async function renderEditUserForm(userId) {
     `;
 
     // Close form functionality
-    document.getElementById("close-edit-user").addEventListener("click", async () => {
-        const users = await fetchUsers(token);
-        renderUsersTable(users);
+    document.getElementById("close-edit-user").addEventListener("click", () => {
+        loadUsersTab();
     });
 
     // Update user functionality
@@ -228,13 +254,12 @@ async function renderEditUserForm(userId) {
 
             if (response.ok) {
                 alert("User updated successfully.");
-                const users = await fetchUsers(token);
-                renderUsersTable(users);
+                loadUsersTab();
             } else {
                 alert("Failed to update user.");
             }
-        } catch (err) {
-            console.error("Error updating user:", err);
+        } catch (error) {
+            console.error("Error updating user:", error);
         }
     });
 }
@@ -249,19 +274,16 @@ async function handleDeleteUser(userId) {
     try {
         const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
             method: "DELETE",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
         });
 
         if (response.ok) {
             alert("User deleted successfully.");
-            const users = await fetchUsers(token);
-            renderUsersTable(users);
+            loadUsersTab();
         } else {
             alert("Failed to delete user.");
         }
-    } catch (err) {
-        console.error("Error deleting user:", err);
+    } catch (error) {
+        console.error("Error deleting user:", error);
     }
 }

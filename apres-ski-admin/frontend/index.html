@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="styles/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
+
 </head>
 <body>
     <!-- Header Section -->
@@ -16,46 +19,70 @@
     <!-- Navigation Bar -->
     <nav>
     <ul class="tabs">
-        <li class="tab-item" data-target="dashboard-tab">Dashboard</li>
+        <li class="tab-item " data-target="dashboard-tab">Dashboard</li>
         <li class="tab-item" data-target="calendars-tab">Calendars</li>
         <li class="tab-item" data-target="businesses-tab">Businesses</li>
         <li class="tab-item" data-target="events-tab">Events</li>
+        <li class="tab-item" data-target="states-tab">States</li>
         <li class="tab-item" data-target="users-tab">Users</li>
     </ul>
 </nav>
 
+
 <div id="content-area">
-    <section id="dashboard-tab" class="tab-content">
+    <!-- Dashboard Tab -->
+    <section id="dashboard-tab" class="tab-content" style="display: none;">
         <h2>Dashboard Overview</h2>
         <p>Welcome to the admin dashboard. Use the navigation bar to manage various sections.</p>
     </section>
 
-    <section id="calendars-tab" class="tab-content">
-        <h2>Manage Calendars</h2>
-        <p>Calendars management content goes here.</p>
+    <!-- Calendars Tab -->
+    <section id="calendars-tab" class="tab-content" style="display: none;">
+        <h2>Calendar Management</h2>
+        <label for="calendar-type-dropdown">Select Calendar:</label>
+        <select id="calendar-type-dropdown">
+            <!-- Options will be dynamically populated here -->
+        </select>
+        <div id="calendar"></div> <!-- This is where the FullCalendar will render -->
     </section>
+    
+    
 
-    <section id="businesses-tab" class="tab-content">
+    <!-- Businesses Tab -->
+    <section id="businesses-tab" class="tab-content" style="display: none;">
         <h2>Manage Businesses</h2>
         <p>Businesses management content goes here.</p>
     </section>
 
-    <section id="events-tab" class="tab-content">
+    <!-- Events Tab -->
+    <section id="events-tab" class="tab-content" style="display: none;">
         <h2>Manage Events</h2>
         <p>Events management content goes here.</p>
     </section>
 
-    <section id="users-tab" class="tab-content">
-        <h2>Manage Users</h2>
-        <p>User management content goes here.</p>
+    <!-- States and Towns Tab -->
+    <section id="states-tab" class="tab-content" style="display: none;">
+        <h2>Manage States and Towns</h2>
+        <div id="states-container">
+            <!-- Dynamic states and towns content -->
+        </div>
+    </section>
+
+    <section id="users-tab" class="tab-content" style="display: none;">
+        <h2>Manage States and Towns</h2>
+        <div id="states-list">
+        </div>
     </section>
 </div>
+
+
 
     <!-- Scripts -->
     <script src="./js/dashboard.js"></script>
     <script src="js/calendars.js"></script>
     <script src="js/businesses.js"></script>
     <script src="js/events.js"></script>
+    <script src="./js/states.js"></script>
     <script src="js/users.js"></script>
 </body>
 </html>
