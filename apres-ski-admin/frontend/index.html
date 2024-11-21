@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <h1>Admin Dashboard</h1>
+        <button id="logout-btn" class="logout-button">Logout</button>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav>
+    <ul class="tabs">
+        <li class="tab-item" data-target="dashboard-tab">Dashboard</li>
+        <li class="tab-item" data-target="calendars-tab">Calendars</li>
+        <li class="tab-item" data-target="businesses-tab">Businesses</li>
+        <li class="tab-item" data-target="events-tab">Events</li>
+        <li class="tab-item" data-target="users-tab">Users</li>
+    </ul>
+</nav>
+
+<div id="content-area">
+    <section id="dashboard-tab" class="tab-content">
+        <h2>Dashboard Overview</h2>
+        <p>Welcome to the admin dashboard. Use the navigation bar to manage various sections.</p>
+    </section>
+
+    <section id="calendars-tab" class="tab-content">
+        <h2>Manage Calendars</h2>
+        <p>Calendars management content goes here.</p>
+    </section>
+
+    <section id="businesses-tab" class="tab-content">
+        <h2>Manage Businesses</h2>
+        <p>Businesses management content goes here.</p>
+    </section>
+
+    <section id="events-tab" class="tab-content">
+        <h2>Manage Events</h2>
+        <p>Events management content goes here.</p>
+    </section>
+
+    <section id="users-tab" class="tab-content">
+        <h2>Manage Users</h2>
+        <p>User management content goes here.</p>
+    </section>
+</div>
+
+    <!-- Scripts -->
+    <script src="./js/dashboard.js"></script>
+    <script src="js/calendars.js"></script>
+    <script src="js/businesses.js"></script>
+    <script src="js/events.js"></script>
+    <script src="js/users.js"></script>
+</body>
+</html>

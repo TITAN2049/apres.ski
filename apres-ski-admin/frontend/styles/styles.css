@@ -1,0 +1,231 @@
+/* General Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+/* Header */
+header {
+    background-color: #00008B;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+header .logout-button {
+    background-color: #363737;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+header .logout-button:hover {
+    background-color: #c82333;
+}
+
+/* Navigation Bar */
+nav {
+    background-color: #363737;
+    color: white;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tabs {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.tabs .tab-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    color: white;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.tabs .tab-item:hover {
+    background-color: #0056b3;
+}
+
+.tabs .tab-item.active {
+    background-color: #0056b3;
+    font-weight: bold;
+}
+/* Hide all tab content by default */
+.tab-content {
+    display: none;
+}
+
+/* Add a class to show the active tab */
+.tab-content.active {
+    display: block;
+}
+
+/* Content Area */
+#content-area {
+    margin: 20px;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+table th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: bold;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Buttons */
+button {
+    padding: 8px 12px;
+    font-size: 14px;
+    margin: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button.edit-btn {
+    background-color: #ffc107;
+    color: black;
+}
+
+button.edit-btn:hover {
+    background-color: #e0a800;
+}
+
+button.delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+button.delete-btn:hover {
+    background-color: #c82333;
+}
+
+button#add-user-btn {
+    margin-bottom: 10px;
+    background-color: #007bff;
+    color: white;
+}
+
+button#add-user-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Headings */
+h2 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* Forms */
+form {
+    margin-top: 20px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+form input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+form button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #218838;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 18px;
+    }
+
+    .tabs .tab-item {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    form button {
+        width: 100%;
+    }
+}
+.close-btn {
+    background: none; /* No background */
+    border: none; /* No border */
+    color: red; /* Button color */
+    font-size: 20px; /* Font size */
+    font-weight: bold; /* Bold text */
+    cursor: pointer; /* Pointer on hover */
+    position: absolute; /* Absolute positioning within the form */
+    top: 140px; /* Adjust distance from the top of the form */
+    right: 20px; /* Adjust distance from the right of the form */
+    z-index: 10; /* Ensure it appears above other elements */
+}
