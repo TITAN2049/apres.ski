@@ -287,3 +287,123 @@ li {
     max-width: 900px;
     margin: 20px auto;
 }
+/* Tile container for states */
+.tile-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.state-tile {
+    width: 150px;
+    height: 100px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.state-tile:hover {
+    transform: scale(1.05);
+}
+
+/* State Admin Page */
+.state-admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.state-admin-tabs {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.state-tab {
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.state-tab.active {
+    background-color: #ddd;
+}
+
+.state-tab-content {
+    display: none;
+}
+
+.state-tab-content.active {
+    display: block;
+}
+
+/* Close button */
+.close-btn {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/* Form Styling */
+#business-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#business-form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#business-form input,
+#business-form select,
+#business-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#business-form button {
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#save-business-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+#cancel-business-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+#apres-membership label {
+    display: inline-block;
+    margin-right: 10px;
+}

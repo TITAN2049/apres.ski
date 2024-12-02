@@ -1,7 +1,14 @@
+document.addEventListener("DOMContentLoaded", () => {
+    loadStatesTab();
+});
+
 async function loadStatesTab() {
     const statesContainer = document.getElementById("states-container");
-    if (!statesContainer) {
-        console.error("States container not found");
+    const townManagementPage = document.getElementById("town-management-page");
+    const townTitle = document.getElementById("town-title");
+
+    if (!statesContainer || !townManagementPage || !townTitle) {
+        console.error("Required DOM elements are missing.");
         return;
     }
 
@@ -12,13 +19,8 @@ async function loadStatesTab() {
     }
 
     try {
-        const states = await fetchStates(); // Fetch all states
-        statesContainer.innerHTML = ""; // Clear previous content
-
-        for (const state of states) {
-            statesContainer.innerHTML += renderStateTile(state);
-        }
-
+        const states = await fetchStates();
+        statesContainer.innerHTML = states.map(renderStateTile).join("");
         attachStateTileListeners();
     } catch (error) {
         console.error("Error loading states:", error);
@@ -26,7 +28,7 @@ async function loadStatesTab() {
     }
 }
 
-// Fetch all states
+// Fetch states
 async function fetchStates() {
     const response = await fetch("http://localhost:5000/api/states");
     if (!response.ok) {
@@ -44,326 +46,181 @@ async function fetchTowns(stateId) {
     return response.json();
 }
 
-// Fetch venues for a town
-async function fetchVenues(townId) {
-    const response = await fetch(`http://localhost:5000/api/towns/${townId}/venues`);
-    if (!response.ok) {
-        throw new Error(`Failed to fetch venues for town ID: ${townId}`);
-    }
-    return response.json();
-}
-async function fetchBusinesses(townName) {
-    try {
-        const response = await fetch(`http://localhost:5000/api/towns/${townName}/businesses`);
-        if (!response.ok) {
-            throw new Error("Failed to fetch businesses");
-        }
-        return await response.json();
-    } catch (error) {
-        console.error("Error fetching businesses:", error);
-        throw error;
-    }
-}
-
-
-async function fetchBusinessesForTown(cityName) {
-    try {
-        const response = await fetch(`http://localhost:5000/api/towns/${cityName}/businesses`);
-        if (!response.ok) {
-            throw new Error(`Failed to fetch businesses for ${cityName}`);
-        }
-        return response.json();
-    } catch (error) {
-        console.error("Error fetching businesses:", error);
-        alert("Could not load businesses for this town.");
-    }
-}
-
-
-// Render a single state tile
+// Render state tile
 function renderStateTile(state) {
     return `
         <div class="state-card" data-state-id="${state.id}">
             <h3>${state.name}</h3>
-            <div class="state-actions">
-                <button class="toggle-towns-btn" data-state-id="${state.id}">Show Towns</button>
-            </div>
-            <ul class="towns-list" id="towns-list-${state.id}" style="display: none;"></ul>
+            <button class="view-towns-btn" data-state-id="${state.id}">View Towns</button>
         </div>
     `;
 }
 
-// Attach listeners to state actions
+// Attach state tile listeners
 function attachStateTileListeners() {
-    document.querySelectorAll(".toggle-towns-btn").forEach((btn) =>
+    document.querySelectorAll(".view-towns-btn").forEach((btn) => {
         btn.addEventListener("click", async (e) => {
             const stateId = e.target.dataset.stateId;
-            const townsList = document.getElementById(`towns-list-${stateId}`);
 
-            if (townsList.style.display === "none") {
+            try {
                 const towns = await fetchTowns(stateId);
-                townsList.innerHTML = renderTownsWithDetails(towns, stateId);
-                townsList.style.display = "block";
-                attachDetailsListeners();
-            } else {
-                townsList.style.display = "none";
+                renderTownsList(towns, stateId);
+            } catch (error) {
+                console.error("Error loading towns:", error);
+                alert("Failed to load towns for this state.");
             }
-        })
-    );
+        });
+    });
 }
 
-// Render towns with details (venues and businesses)
-function renderTownsWithDetails(towns, stateId) {
-    return towns
+// Render list of towns
+function renderTownsList(towns, stateId) {
+    const statesContainer = document.getElementById("states-container");
+    const townManagementPage = document.getElementById("town-management-page");
+
+    statesContainer.innerHTML = towns
         .map(
             (town) => `
-            <li>
-                ${town.name}
-                <button class="toggle-details-btn" data-town-id="${town.id}">Show Details</button>
-                <div class="town-details" id="town-details-${town.id}" style="display: none;">
-                    <h4>Venues</h4>
-                    <ul class="venues-list" id="venues-list-${town.id}"></ul>
-                    <button class="add-venue-btn" data-town-id="${town.id}">Add Venue</button>
-
-                    <h4>Businesses</h4>
-                    <ul class="businesses-list" id="businesses-list-${town.id}"></ul>
-                    <button class="add-business-btn" data-town-id="${town.id}">Add Business</button>
-                </div>
-            </li>
-        `
+        <div class="town-card" data-town-id="${town.id}">
+            <h4>${town.name}</h4>
+            <button class="manage-town-btn" data-town-id="${town.id}" data-town-name="${town.name}">Manage Town</button>
+            
+        </div>
+    `
         )
         .join("");
+
+    attachTownManageListeners(stateId);
 }
 
-// Attach event listeners for showing town details
-function attachDetailsListeners() {
-    document.querySelectorAll(".toggle-details-btn").forEach((btn) =>
+// Attach listeners to manage town buttons
+function attachTownManageListeners(stateId) {
+    document.querySelectorAll(".manage-town-btn").forEach((btn) => {
         btn.addEventListener("click", async (e) => {
             const townId = e.target.dataset.townId;
-            const details = document.getElementById(`town-details-${townId}`);
+            const townName = e.target.dataset.townName;
 
-            if (details.style.display === "none") {
-                const venues = await fetchVenues(townId);
-                const businesses = await fetchBusinesses(townId);
-
-                document.getElementById(`venues-list-${townId}`).innerHTML = renderVenues(venues, townId);
-                document.getElementById(`businesses-list-${townId}`).innerHTML = renderBusinesses(
-                    businesses,
-                    townId
-                );
-
-                details.style.display = "block";
-                attachAddVenueListener(townId);
-                attachAddBusinessListener(townId);
-                attachDeleteVenueListeners();
-                attachDeleteBusinessListeners();
-            } else {
-                details.style.display = "none";
-            }
-        })
-    );
-}
-
-// Render venues
-function renderVenues(venues, townId) {
-    return `
-        ${venues
-            .map(
-                (venue) => `
-                <li>
-                    ${venue.name}
-                    <button class="delete-venue-btn" data-venue-id="${venue.id}">Delete</button>
-                </li>
-            `
-            )
-            .join("")}
-    `;
-}
-
-// Render businesses
-function renderBusinesses(businesses, townId) {
-    return `
-        ${businesses
-            .map(
-                (business) => `
-                <li>
-                    ${business.name}
-                    <button class="delete-business-btn" data-business-id="${business.id}">Delete</button>
-                </li>
-            `
-            )
-            .join("")}
-    `;
-}
-
-// Add venue functionality
-function attachAddVenueListener(townId) {
-    document.querySelector(`.add-venue-btn[data-town-id="${townId}"]`).addEventListener("click", () => {
-        renderAddVenueForm(townId);
+            await loadTownManagementPage(townId, townName);
+        });
     });
 }
 
-// Add business functionality
-function attachAddBusinessListener(townId) {
-    document.querySelector(`.add-business-btn[data-town-id="${townId}"]`).addEventListener("click", () => {
-        renderAddBusinessForm(townId);
+// Load town management page
+async function loadTownManagementPage(townId, townName) {
+    const statesContainer = document.getElementById("states-container");
+    const townManagementPage = document.getElementById("town-management-page");
+    const townTitle = document.getElementById("town-title");
+
+    statesContainer.style.display = "none";
+    townManagementPage.style.display = "block";
+    townTitle.textContent = townName;
+
+    // Render default tab content (e.g., Events)
+    loadTownEventsTab(townId);
+
+    // Attach tab switching logic
+    attachTownTabListeners(townId);
+
+    // Close button logic
+    document.getElementById("close-town-management").addEventListener("click", () => {
+        townManagementPage.style.display = "none";
+        statesContainer.style.display = "block";
     });
 }
 
-// Add venue form
-function renderAddVenueForm(townId) {
-    const venuesList = document.getElementById(`venues-list-${townId}`);
-    if (!venuesList) return;
+// Attach town tab listeners
+function attachTownTabListeners(townId) {
+    document.querySelectorAll(".town-tab").forEach((tab) => {
+        tab.addEventListener("click", (e) => {
+            const tabName = e.target.dataset.tab;
 
-    venuesList.innerHTML += `
-        <li>
-            <form id="add-venue-form-${townId}">
-                <input type="text" id="new-venue-name-${townId}" placeholder="Venue Name" required>
-                <button type="submit">Add</button>
-                <button type="button" class="cancel-add-venue-btn" data-town-id="${townId}">Cancel</button>
-            </form>
-        </li>
-    `;
-
-    document.getElementById(`add-venue-form-${townId}`).addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const venueName = document.getElementById(`new-venue-name-${townId}`).value;
-        try {
-            const response = await fetch("http://localhost:5000/api/venues", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ name: venueName, townId }),
+            document.querySelectorAll(".town-tab-content").forEach((content) => {
+                content.style.display = "none";
             });
 
-            if (response.ok) {
-                alert("Venue added successfully.");
-                const venues = await fetchVenues(townId);
-                venuesList.innerHTML = renderVenues(venues, townId);
-                attachAddVenueListener(townId);
-                attachDeleteVenueListeners();
-            } else {
-                alert("Failed to add venue.");
-            }
-        } catch (error) {
-            console.error("Error adding venue:", error);
-        }
-    });
+            document.getElementById(tabName).style.display = "block";
 
-    document.querySelector(`.cancel-add-venue-btn[data-town-id="${townId}"]`).addEventListener("click", () => {
-        const venuesList = document.getElementById(`venues-list-${townId}`);
-        venuesList.innerHTML = ""; // Reset the venues list
+            // Load specific content based on the selected tab
+            if (tabName === "town-events-tab") {
+                loadTownEventsTab(townId);
+            } else if (tabName === "town-businesses-tab") {
+                loadTownBusinessesTab(townId);
+            } else if (tabName === "town-venues-tab") {
+                loadTownVenuesTab(townId);
+            }
+        });
     });
 }
 
-// Add business form
-function renderAddBusinessForm(townId) {
-    const businessesList = document.getElementById(`businesses-list-${townId}`);
-    if (!businessesList) return;
+// Load events tab content
+async function loadTownEventsTab(townId) {
+    const eventsContainer = document.getElementById("town-events-tab");
+    eventsContainer.innerHTML = "<p>Loading events...</p>";
 
-    businessesList.innerHTML += `
-        <li>
-            <form id="add-business-form-${townId}">
-                <input type="text" id="new-business-name-${townId}" placeholder="Business Name" required>
-                <button type="submit">Add</button>
-                <button type="button" class="cancel-add-business-btn" data-town-id="${townId}">Cancel</button>
-            </form>
-        </li>
+    try {
+        const events = await fetch(`http://localhost:5000/api/towns/${townId}/events`);
+        eventsContainer.innerHTML = renderCalendar(events);
+    } catch (error) {
+        console.error("Error loading events:", error);
+        eventsContainer.innerHTML = "<p>Failed to load events.</p>";
+    }
+}
+
+// Load businesses tab content
+async function loadTownBusinessesTab(townId) {
+    const businessesContainer = document.getElementById("town-businesses-tab");
+    businessesContainer.innerHTML = "<p>Loading businesses...</p>";
+
+    try {
+        const businesses = await fetchBusinesses(townId);
+        businessesContainer.innerHTML = businesses.map(renderBusinessCard).join("");
+    } catch (error) {
+        console.error("Error loading businesses:", error);
+        businessesContainer.innerHTML = "<p>Failed to load businesses.</p>";
+    }
+}
+
+// Load venues tab content
+async function loadTownVenuesTab(townId) {
+    const venuesContainer = document.getElementById("town-venues-tab");
+    venuesContainer.innerHTML = "<p>Loading venues...</p>";
+
+    try {
+        const venues = await fetchVenues(townId);
+        venuesContainer.innerHTML = venues.map(renderVenueTile).join("");
+    } catch (error) {
+        console.error("Error loading venues:", error);
+        venuesContainer.innerHTML = "<p>Failed to load venues.</p>";
+    }
+}
+
+// Render business card
+function renderBusinessCard(business) {
+    return `
+        <div class="business-card">
+            <h4>${business.name}</h4>
+            <p>${business.description || "No description available."}</p>
+            <button class="edit-business-btn" data-business-id="${business.id}">Edit</button>
+            <button class="delete-business-btn" data-business-id="${business.id}">Delete</button>
+        </div>
     `;
-
-    document.getElementById(`add-business-form-${townId}`).addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const businessName = document.getElementById(`new-business-name-${townId}`).value;
-        try {
-            const response = await fetch("http://localhost:5000/api/businesses", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ name: businessName, townId }),
-            });
-
-            if (response.ok) {
-                alert("Business added successfully.");
-                const businesses = await fetchBusinesses(townId);
-                businessesList.innerHTML = renderBusinesses(businesses, townId);
-                attachAddBusinessListener(townId);
-                attachDeleteBusinessListeners();
-            } else {
-                alert("Failed to add business.");
-            }
-        } catch (error) {
-            console.error("Error adding business:", error);
-        }
-    });
-
-    document.querySelector(`.cancel-add-business-btn[data-town-id="${townId}"]`).addEventListener("click", () => {
-        const businessesList = document.getElementById(`businesses-list-${townId}`);
-        businessesList.innerHTML = ""; // Reset the businesses list
-    });
 }
 
-// Attach delete venue listeners
-function attachDeleteVenueListeners() {
-    document.querySelectorAll(".delete-venue-btn").forEach((btn) =>
-        btn.addEventListener("click", async (e) => {
-            const venueId = e.target.dataset.venueId;
-            const townId = e.target.closest("ul").dataset.townId;
-
-            const confirmation = confirm("Are you sure you want to delete this venue?");
-            if (!confirmation) return;
-
-            try {
-                const response = await fetch(`http://localhost:5000/api/venues/${venueId}`, {
-                    method: "DELETE",
-                });
-
-                if (response.ok) {
-                    alert("Venue deleted successfully.");
-                    const venues = await fetchVenues(townId);
-                    const venuesList = document.getElementById(`venues-list-${townId}`);
-                    venuesList.innerHTML = renderVenues(venues, townId);
-                    attachDeleteVenueListeners();
-                } else {
-                    alert("Failed to delete venue.");
-                }
-            } catch (error) {
-                console.error("Error deleting venue:", error);
-            }
-        })
-    );
+// Render venue tile
+function renderVenueTile(venue) {
+    return `
+        <div class="venue-tile">
+            <h4>${venue.name}</h4>
+            <button class="delete-venue-btn" data-venue-id="${venue.id}">Delete</button>
+        </div>
+    `;
 }
 
-// Attach delete business listeners
-function attachDeleteBusinessListeners() {
-    document.querySelectorAll(".delete-business-btn").forEach((btn) =>
-        btn.addEventListener("click", async (e) => {
-            const businessId = e.target.dataset.businessId;
-            const townId = e.target.closest("ul").dataset.townId;
-
-            const confirmation = confirm("Are you sure you want to delete this business?");
-            if (!confirmation) return;
-
-            try {
-                const response = await fetch(`http://localhost:5000/api/businesses/${businessId}`, {
-                    method: "DELETE",
-                });
-
-                if (response.ok) {
-                    alert("Business deleted successfully.");
-                    const businesses = await fetchBusinesses(townId);
-                    const businessesList = document.getElementById(`businesses-list-${townId}`);
-                    businessesList.innerHTML = renderBusinesses(businesses, townId);
-                    attachDeleteBusinessListeners();
-                } else {
-                    alert("Failed to delete business.");
-                }
-            } catch (error) {
-                console.error("Error deleting business:", error);
-            }
-        })
-    );
+// Render calendar (dummy calendar implementation)
+function renderCalendar(events) {
+    return `
+        <div id="calendar">
+            <p>Calendar placeholder - events data integration coming soon.</p>
+        </div>
+    `;
 }

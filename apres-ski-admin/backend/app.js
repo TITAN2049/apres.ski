@@ -284,6 +284,26 @@ app.delete("/api/towns/:townId", async (req, res) => {
 });
 
 // Businesses
+app.get("/api/states", async (req, res) => {
+    try {
+        const states = await db.query("SELECT * FROM States ORDER BY name ASC");
+        res.json(states.rows);
+    } catch (error) {
+        console.error("Error fetching states:", error);
+        res.status(500).json({ message: "Failed to fetch states." });
+    }
+});
+
+app.get("/api/businesses", async (req, res) => {
+    try {
+        const businesses = await db.query("SELECT * FROM Businesses");
+        res.json(businesses.rows);
+    } catch (error) {
+        console.error("Error fetching businesses:", error);
+        res.status(500).json({ message: "Failed to fetch businesses." });
+    }
+});
+
 app.get("/api/towns/:townName/businesses", async (req, res) => {
     const { townName } = req.params;
     try {
@@ -478,6 +498,18 @@ app.get("/api/categories/:categoryId/subcategories", async (req, res) => {
     }
 });
 
+// Fetch towns for a specific state
+app.get("/api/states/:stateId/towns", async (req, res) => {
+    const { stateId } = req.params;
+
+    try {
+        const result = await db.query("SELECT id, name FROM Towns WHERE state_id = $1", [stateId]);
+        res.json(result.rows);
+    } catch (error) {
+        console.error("Error fetching towns:", error);
+        res.status(500).json({ message: "Failed to fetch towns." });
+    }
+});
 
 // Start the server
 app.listen(PORT, () => {

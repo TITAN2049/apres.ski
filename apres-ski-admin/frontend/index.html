@@ -6,8 +6,7 @@
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="styles/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
 </head>
 <body>
     <!-- Header Section -->
@@ -18,64 +17,227 @@
 
     <!-- Navigation Bar -->
     <nav>
-    <ul class="tabs">
-        <li class="tab-item " data-target="dashboard-tab">Dashboard</li>
-        <li class="tab-item" data-target="calendars-tab">Calendars</li>
-        <li class="tab-item" data-target="businesses-tab">Businesses</li>
-        <li class="tab-item" data-target="events-tab">Events</li>
-        <li class="tab-item" data-target="states-tab">States</li>
-        <li class="tab-item" data-target="users-tab">Users</li>
-    </ul>
-</nav>
+        <ul class="tabs">
+            <li class="tab-item" data-target="dashboard-tab">Dashboard</li>
+            <li class="tab-item" data-target="calendars-tab">Calendars</li>
+            <li class="tab-item" data-target="businesses-tab">Businesses</li>
+            <li class="tab-item" data-target="events-tab">Events</li>
+            <li class="tab-item" data-target="states-tab">States</li>
+            <li class="tab-item" data-target="users-tab">Users</li>
+        </ul>
+    </nav>
 
+    <div id="content-area">
+        <!-- Dashboard Tab -->
+        <section id="dashboard-tab" class="tab-content" style="display: none;">
+            <h2>Dashboard Overview</h2>
+            <p>Welcome to the admin dashboard. Use the navigation bar to manage various sections.</p>
+        </section>
 
-<div id="content-area">
-    <!-- Dashboard Tab -->
-    <section id="dashboard-tab" class="tab-content" style="display: none;">
-        <h2>Dashboard Overview</h2>
-        <p>Welcome to the admin dashboard. Use the navigation bar to manage various sections.</p>
-    </section>
+        <!-- Calendars Tab -->
+        <section id="calendars-tab" class="tab-content" style="display: none;">
+            <h2>Calendar Management</h2>
+            <label for="calendar-type-dropdown">Select Calendar:</label>
+            <select id="calendar-type-dropdown"></select>
+            <div id="calendar"></div> <!-- Calendar Render Area -->
+        </section>
 
-    <!-- Calendars Tab -->
-    <section id="calendars-tab" class="tab-content" style="display: none;">
-        <h2>Calendar Management</h2>
-        <label for="calendar-type-dropdown">Select Calendar:</label>
-        <select id="calendar-type-dropdown">
-            <!-- Options will be dynamically populated here -->
-        </select>
-        <div id="calendar"></div> <!-- This is where the FullCalendar will render -->
-    </section>
+        <!-- Businesses Tab -->
+        <section id="businesses-tab" class="tab-content" style="display: none;">
+            <h2>Manage Businesses</h2>
+            <!-- Container for displaying the list of businesses -->
+            <div id="businesses-list">
+                <p>Loading businesses...</p>
+            </div>
+        
+            <!-- Button to open the business creation form -->
+            <button id="add-business-btn" class="add-btn">Add New Business</button>
+        
+            <!-- Business Creation Form -->
+            <section id="business-form-container" style="display: none;">
+                <h2 id="business-form-title">Add New Business</h2>
+                <form id="business-form">
+                    <!-- Mandatory Fields -->
+                    <div class="form-section">
+                        <label for="venue-name">*Venue Name:</label>
+                        <input type="text" id="venue-name" placeholder="Enter Venue Name" required />
+                    </div>
+            
+                    <div class="form-section">
+                        <label for="best-of-apres">*Best of Apres-Ski?</label>
+                        <select id="best-of-apres" required>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+            
+                    <div class="form-section">
+                        <label for="classification">*Classification:</label>
+                        <select id="classification" required>
+                            <option value="Double Diamond (21+ Only)">Double Diamond (21+ Only)</option>
+                            <option value="Black Diamond (Adults Only Recommended)">
+                                Black Diamond (Adults Only Recommended)
+                            </option>
+                            <option value="Blue Square + Double Diamond (Family-Friendly during day, 21+ After 9p)">
+                                Blue Square + Double Diamond (Family-Friendly during day, 21+ After 9p)
+                            </option>
+                            <option value="Blue Square (Family-Friendly)">Blue Square (Family-Friendly)</option>
+                            <option value="Green Circle (All Ages)">Green Circle (All Ages)</option>
+                        </select>
+                    </div>
+            
+                    <div class="form-section">
+                        <label for="physical-address">*Physical Address:</label>
+                        <input type="text" id="physical-address" placeholder="Enter Physical Address" required />
+                    </div>
+            
+                
+            
+                    <div class="form-section">
+                        <label for="state">*State:</label>
+                        <select id="state" required>
+                            <!-- Dynamically populated -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-section">
+                        <label for="town">*Town:</label>
+                        <select id="town" required>
+                            <option value="">Select a town</option>
+                        </select>
+                    </div>
+            
+                    <div class="form-section">
+                        <label for="zip">*Zip:</label>
+                        <input type="text" id="zip" placeholder="Enter Zip Code" required />
+                    </div>
+            
+                    <!-- Optional Fields -->
+                    <div class="form-section">
+                        <label for="website-url">Website URL:</label>
+                        <input type="url" id="website-url" placeholder="Enter Website URL" />
+                    </div>
+            
+                    <div class="form-section">
+                        <label for="facebook-page">Facebook Page:</label>
+                        <input type="url" id="facebook-page" placeholder="Enter Facebook URL" />
+                    </div>
+            
+                    <div class="form-section">
+                        <label for="instagram-page">Instagram Page:</label>
+                        <input type="url" id="instagram-page" placeholder="Enter Instagram URL" />
+                    </div>
+            
+                    <div class="form-section">
+                        <label for="x-page">X Page:</label>
+                        <input type="url" id="x-page" placeholder="Enter X URL" />
+                    </div>
+            
+                    <div class="form-section">
+                        <label for="menu-pdf">Menu PDF (For Restaurants):</label>
+                        <input type="file" id="menu-pdf" accept=".pdf" />
+                    </div>
+            
+                    <div class="form-section">
+                        <label for="internal-info">Internal Info:</label>
+                        <textarea id="internal-info" placeholder="Enter Internal Information"></textarea>
+                    </div>
+            
+                    <div class="form-section">
+                        <label for="mailing-address">Mailing Address:</label>
+                        <input type="text" id="mailing-address" placeholder="Enter Mailing Address" />
+                    </div>
+            
+                    <div class="form-section">
+                        <label for="mailing-city">Mailing City:</label>
+                        <input type="text" id="mailing-city" placeholder="Enter Mailing City" />
+                    </div>
+            
+                    <div class="form-section">
+                        <label for="mailing-state">Mailing State:</label>
+                        <select id="mailing-state">
+                            <!-- Dynamically populated -->
+                        </select>
+                    </div>
+            
+                    <div class="form-section">
+                        <label for="mailing-zip">Mailing Zip:</label>
+                        <input type="text" id="mailing-zip" placeholder="Enter Mailing Zip Code" />
+                    </div>
+            
+                    <div class="form-section">
+                        <label>Best of Apres-Ski Membership (check all that apply):</label>
+                        <div id="apres-membership">
+                            <label><input type="checkbox" value="2025" /> 2025</label>
+                            <label><input type="checkbox" value="2020" /> 2020</label>
+                            <label><input type="checkbox" value="2019" /> 2019</label>
+                            <label><input type="checkbox" value="2018" /> 2018</label>
+                            <label><input type="checkbox" value="2017" /> 2017</label>
+                        </div>
+                    </div>
+            
+                    <!-- Approved Photos -->
+                    <div class="form-section">
+                        <label>*Approved Photos:</label>
+                        <input type="file" id="approved-photos" multiple required />
+                    </div>
+            
+                    <div class="form-section">
+                        <button type="submit" id="save-business-btn">Save Business</button>
+                        <button type="button" id="cancel-business-btn">Cancel</button>
+                    </div>
+                </form>
+            </section>
+        </section>
+        
+
+        <!-- Events Tab -->
+        <section id="events-tab" class="tab-content" style="display: none;">
+            <h2>Manage Events</h2>
+            <p>Events management content goes here.</p>
+        </section>
+
+        <!-- States Tab -->
+        <section id="states-tab" class="tab-content" style="display: none;">
+            <h2>Manage States</h2>
+            <div id="states-container" class="tile-container"></div>
+        </section>
+
+        <!-- Town Management Page -->
+        <section id="town-management-page" class="tab-content" style="display: none;">
+            <div class="town-management-header">
+                <h2 id="town-title"></h2>
+                <button id="close-town-management" class="close-btn">X</button>
+            </div>
+
+            <!-- Tabs for Town Management -->
+            <nav class="town-tabs">
+                <button data-tab="town-events-tab" class="town-tab active">Events</button>
+                <button data-tab="town-businesses-tab" class="town-tab">Businesses</button>
+                <button data-tab="town-venues-tab" class="town-tab">Venues</button>
+            </nav>
+
+            <!-- Tab Content -->
+            <div id="town-events-tab" class="town-tab-content" style="display: block;">
+                <div id="calendar-container">Loading events...</div>
+            </div>
+            <div id="town-businesses-tab" class="town-tab-content" style="display: none;">
+                <div id="businesses-container">Loading businesses...</div>
+            </div>
+            <div id="town-venues-tab" class="town-tab-content" style="display: none;">
+                <div id="venues-container">Loading venues...</div>
+            </div>
+        </section>
+
+        <section id="users-tab" class="tab-content" style="display: none;">
+            <h2>Manage Users</h2>
+            <div id="states-list">
+            </div>
+        </section>
+    </div>
     
     
-
-    <!-- Businesses Tab -->
-    <section id="businesses-tab" class="tab-content" style="display: none;">
-        <h2>Manage Businesses</h2>
-        <p>Businesses management content goes here.</p>
-    </section>
-
-    <!-- Events Tab -->
-    <section id="events-tab" class="tab-content" style="display: none;">
-        <h2>Manage Events</h2>
-        <p>Events management content goes here.</p>
-    </section>
-
-    <!-- States and Towns Tab -->
-    <section id="states-tab" class="tab-content" style="display: none;">
-        <h2>Manage States and Towns</h2>
-        <div id="states-container">
-            <!-- Dynamic states and towns content -->
-        </div>
-    </section>
-
-    <section id="users-tab" class="tab-content" style="display: none;">
-        <h2>Manage States and Towns</h2>
-        <div id="states-list">
-        </div>
-    </section>
-</div>
-
-
+    </div>
 
     <!-- Scripts -->
     <script src="./js/dashboard.js"></script>
